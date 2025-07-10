@@ -18,8 +18,6 @@ function ForgotPasswordPage() {
               />
             </div>
 
-            <br />
-
             <div className="text-center">
               <button type="submit" className="btn btn-primary w-100">
                 Enviar al correo
