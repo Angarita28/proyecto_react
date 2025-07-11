@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
+
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../../firebase"; // ajusta si tu ruta es diferente
+
 const usuarios = [
   { email: "chus@gmail.com", password: "123" },
   { email: "maria@correo.com", password: "mar123" },
@@ -51,6 +55,25 @@ function LoginPage() {
     }
   };
 
+  // 🔹 Inicio de sesión con Google
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      Swal.fire({
+        title: `¡Bienvenido, ${user.displayName || user.email}!`,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        navigate("/dashboard");
+      });
+    } catch (error) {
+      console.error("Error al iniciar sesión con Google:", error);
+      Swal.fire("Error", "No se pudo iniciar sesión con Google.", "error");
+    }
+  };
+
   return (
     <div className="container vh-100 d-flex justify-content-center align-items-center">
       <div className="card shadow-sm" style={{ maxWidth: '400px', width: '100%' }}>
@@ -94,15 +117,26 @@ function LoginPage() {
             <div className="text-center">
               <button type="submit" className="btn btn-primary w-100">Entrar</button>
             </div>
-            <br />
-            <div className="text-center">
-              <small className="text-muted">
-                ¿No tienes cuenta? <a href="/register">Regístrate</a>
-              </small>
-              <br />
-              <a href="/forgot" className="fs-6">¿Olvidaste tu contraseña?</a>
-            </div>
           </form>
+
+          <hr className="my-3" />
+
+          {/* 🔹 Botón de Google */}
+          <div className="text-center">
+            <button type="button" className="btn btn-outline-secondary w-100" onClick={handleGoogleLogin}>
+              <i className="bi bi-google text-primary me-2"></i> Iniciar sesión con Google
+            </button>
+
+          </div>
+
+          <br />
+          <div className="text-center">
+            <small className="text-muted">
+              ¿No tienes cuenta? <a href="/register">Regístrate</a>
+            </small>
+            <br />
+            <a href="/forgot" className="fs-6">¿Olvidaste tu contraseña?</a>
+          </div>
         </div>
       </div>
     </div>

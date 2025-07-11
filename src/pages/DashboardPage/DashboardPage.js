@@ -23,9 +23,10 @@ export default function HeadersExample() {
                 </div>
             </header>
 
-            <div class="d-flex justify-content-center align-items-center vh-100" >
-                <p class="fs-1 text-primary fw-bold">Bienvenido a la interfaz</p>
+            <div className="d-flex justify-content-center align-items-center vh-100 bg-dark">
+                <p className="fs-1 text-primary fw-bold">Bienvenido a la interfaz</p>
             </div>
+
 
         </>
     );
