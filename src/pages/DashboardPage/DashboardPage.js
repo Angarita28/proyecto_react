@@ -1,6 +1,21 @@
 import React from "react";
+import '../DashboardPage/DashboardPage.css';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { useNavigate } from 'react-router-dom';
 
 export default function HeadersExample() {
+    const navigate = useNavigate();
+   
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            navigate('/');
+        } catch (error) {
+            console.error("Error al cerrar sesion: ", error);
+          
+        }
+    };
     return (
         <>
 
@@ -17,7 +32,7 @@ export default function HeadersExample() {
                             <li><a href="/" className="nav-link px-2 text-primary"> Bienvenido </a></li>
                         </ul>
                         <div className="text-end">
-                            <a href="/" className="btn btn-primary">Cerrar Sesión</a>
+                            <button onClick={handleLogout} className="btn btn-primary">Cerrar Sesión</button>
                         </div>
                     </div>
                 </div>
