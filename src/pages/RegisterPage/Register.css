@@ -1,0 +1,40 @@
+ body{
+    background: linear-gradient(135deg, #007bff, #6610f2);
+ }
+
+ .bg-gradient {
+    background: linear-gradient(135deg, #E0C370, #B8860B);
+}
+
+.form-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    width: 80%;
+    max-width: 500px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.form-card form {
+    max-width: 400px;
+    margin: 0 auto;
+} 
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+}

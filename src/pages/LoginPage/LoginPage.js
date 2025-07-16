@@ -1,31 +1,15 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import '../LoginPage/LoginPage.css'
-
-
-import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../../firebase"; // ajusta si tu ruta es diferente
-
-const usuarios = [
-  { email: "chus@gmail.com", password: "123" },
-  { email: "maria@correo.com", password: "mar123" },
-  { email: "carlos@correo.com", password: "car123" },
-  { email: "laura@correo.com", password: "lau123" },
-  { email: "andres@correo.com", password: "and123" },
-  { email: "camila@correo.com", password: "cam123" },
-  { email: "david@correo.com", password: "dav123" },
-  { email: "paula@correo.com", password: "Pau123" },
-  { email: "jose@correo.com", password: "jos123" },
-  { email: "valentina@correo.com", password: "val123" }
-];
+import { useState } from 'react';
+import Swal from 'sweetalert2';
+import { auth, provider, db } from '../../firebase';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail, linkWithCredential, EmailAuthProvider, signInWithPopup } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import './LoginPage.css';
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -33,51 +17,90 @@ function LoginPage() {
       return;
     }
 
-    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formatoCorreo.test(email)) {
-      Swal.fire("Correo inválido", "Por favor escribe un correo válido.", "error");
-      return;
-    }
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    const usuarioValido = usuarios.find(u => u.email === email && u.password === password);
+      const userDocRef = doc(db, 'usuarios', user.uid);
+      const userSnap = await getDoc(userDocRef);
 
-    if (usuarioValido) {
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        if (data.estado === "Inactivo") {
+          Swal.fire("Acceso denegado", "Tu cuenta está inactiva. Contacta al administrador.", "error");
+          return;
+        }
+      }
+
       Swal.fire({
         title: "¡Bienvenido!",
-        text: "Inicio de sesión exitoso.",
+        text: `Sesión iniciada como ${user.email}`,
         icon: "success",
         timer: 2000,
         showConfirmButton: false
       }).then(() => {
-        navigate("/dashboard");
+        window.location.href = "/dashboard";
       });
-    } else {
-      Swal.fire("Error", "Correo o contraseña incorrectos.", "error");
+
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Credenciales incorrectas o usuario no existe.", "error");
     }
   };
 
-  // 🔹 Inicio de sesión con Google
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      const googleResult = await signInWithPopup(auth, provider);
+      const user = googleResult.user;
+
+      const signInMethods = await fetchSignInMethodsForEmail(auth, user.email);
+
+      if (signInMethods.includes('password')) {
+        const password = await solicitarPassword();
+        if (!password) {
+          Swal.fire("Cancelado", "Operación cancelada.", "info");
+          return;
+        }
+
+        const credential = EmailAuthProvider.credential(user.email, password);
+        await linkWithCredential(user, credential);
+      }
+
       Swal.fire({
-        title: `¡Bienvenido, ${user.displayName || user.email}!`,
+        title: "¡Bienvenido!",
+        text: `Sesión iniciada con Google: ${user.email}`,
         icon: "success",
         timer: 2000,
         showConfirmButton: false
       }).then(() => {
-        navigate("/dashboard");
+        window.location.href = "/dashboard";
       });
+
     } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error);
+      console.error(error);
       Swal.fire("Error", "No se pudo iniciar sesión con Google.", "error");
     }
   };
 
+  const solicitarPassword = async () => {
+    const result = await Swal.fire({
+      title: "Contraseña requerida",
+      input: "password",
+      inputLabel: "Introduce tu contraseña para vincular cuentas",
+      inputPlaceholder: "Tu contraseña",
+      showCancelButton: true,
+      confirmButtonText: "Vincular",
+      cancelButtonText: "Cancelar"
+    });
+
+    if (result.isConfirmed && result.value) {
+      return result.value;
+    }
+    return null;
+  };
+
   return (
     <div className="fondo">
-    
       <div className="container vh-100 d-flex justify-content-center align-items-center">
         <div className="card shadow-sm login-card" style={{ maxWidth: '400px', width: '100%' }}>
           <div className="card-body">
@@ -124,12 +147,10 @@ function LoginPage() {
 
             <hr className="my-3" />
 
-            {/* 🔹 Botón de Google */}
             <div className="text-center">
               <button type="button" className="btn btn-outline-secondary w-100" onClick={handleGoogleLogin}>
                 <i className="bi bi-google text-primary me-2"></i> Iniciar sesión con Google
               </button>
-
             </div>
 
             <br />

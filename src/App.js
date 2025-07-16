@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import RegisterPage from "./pages/RegisterPage/Register";
+import Register from "./pages/RegisterPage/Register";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
 import DashboardPage from "./pages/DashboardPage/DashboardPage";
 import Usestate from "./pages/Playground/usestate";
@@ -19,7 +19,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<ForgotPasswordPage />} />
 
         {/* Ruta protegida con Firebase Auth */}
