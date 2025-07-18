@@ -9,6 +9,7 @@ import Hijo from "./pages/Playground/useContext";
 import Useref from "./pages/Playground/useRef";
 import Usememo from "./pages/Playground/useMemo";
 import NotFoundPage from './pages/components/NotFoundPage';
+import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 
 // Protege rutas con autenticación Firebase
 import ProtectedRoute from './pages/components/ProtectedRoute';
@@ -18,9 +19,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Ruta publicas */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<ForgotPasswordPage />} />
+
+        {/* Ruta publica con Firebase Auth */}
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Ruta protegida con Firebase Auth */}
         <Route path="/dashboard" element={<ProtectedRoute> <DashboardPage /> </ProtectedRoute>} />

@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../../firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+
 
 export default function HeadersExample() {
     const navigate = useNavigate();
@@ -109,7 +111,7 @@ export default function HeadersExample() {
                             <li className="nav-link px-2 text-primary">Bienvenido</li>
                         </ul>
                         <div className="d-flex align-items-center">
-                            <Link to="/dashboard" className="nav-link px-2 text-primary me-2">Usuarios</Link>
+                            <a href="#users" className="nav-link px-2 text-primary me-2">Usuarios</a>
                             <button onClick={handleLogout} className="btn btn-primary">Cerrar Sesión</button>
                         </div>
                     </div>
@@ -121,9 +123,9 @@ export default function HeadersExample() {
             </div>
 
             <main className="main-content">
-                <Container className="mt-4">
-                    <h2 className="page-title text-center mb-4">
-                        AUXILIARES DE SERVICIOS REGISTRADOS EN BRILLA
+                <Container className="mt-4" id='users'>
+                    <h2 className="page-title text-center mb-4" src="#users">
+                        Usuarios Registrados
                     </h2>
                     <div className="table-container">
                         <Table striped bordered hover responsive className="tabla-auxiliares">
@@ -152,21 +154,22 @@ export default function HeadersExample() {
                                         <td>{aux.sexo || '-'}</td>
                                         <td>{aux.estado || 'Pendiente'}</td>
                                         <td>
-                                            <Button
-                                                variant="warning"
-                                                size="sm"
-                                                className="me-2"
-                                                onClick={() => handleEdit(aux)}
-                                            >
-                                                Editar
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                size="sm"
-                                                onClick={() => handleEliminar(aux.id)}
-                                            >
-                                                Eliminar
-                                            </Button>
+                                            <div className="d-flex gap-2">
+                                                <Button
+                                                    variant="warning"
+                                                    size="sm"
+                                                    onClick={() => handleEdit(aux)}
+                                                >
+                                                    <FaEdit /> 
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    onClick={() => handleEliminar(aux.id)}
+                                                >
+                                                    <FaTrash /> 
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -174,11 +177,11 @@ export default function HeadersExample() {
                         </Table>
                     </div>
                 </Container>
-            </main>
+            </main >
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Editar Auxiliar</Modal.Title>
+                    <Modal.Title>Editar Usuarios</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {selectedAux && (

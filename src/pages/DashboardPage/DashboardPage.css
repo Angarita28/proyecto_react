@@ -1,0 +1,28 @@
+/* Ancho mínimo y centrado del contenido de la tabla */
+.tabla-auxiliares th,
+.tabla-auxiliares td {
+    min-width: 100px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Título más grande y resaltado */
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Contenedor de la tabla con fondo blanco y bordes redondeados */
+.table-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
+}
+
+/* Botones dentro de la tabla con márgenes */
+.tabla-auxiliares button {
+    margin: 0 5px;
+}
